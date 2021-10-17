@@ -1,0 +1,21 @@
+{
+  "scripts": {
+    "dev": "tsc --watch",
+    "size": "size-limit",
+    "test": "tsc && size-limit",
+    "format": "prettier --check --write *.js *.json"
+  },
+  "devDependencies": {
+    "@size-limit/preset-small-lib": "^6.0.3",
+    "prettier": "^2.4.1",
+    "size-limit": "^6.0.3",
+    "typescript": "^4.4.4"
+  },
+  "size-limit": [
+    {
+      "path": "index.js",
+      "import": "Template",
+      "limit": "1 kB"
+    }
+  ]
+}

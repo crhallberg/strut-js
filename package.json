@@ -13,8 +13,21 @@
   },
   "size-limit": [
     {
+      "name": "just StrutTemplate",
       "path": "index.js",
       "import": "Template",
+      "limit": "700 B"
+    },
+    {
+      "name": "StrutTemplate + clone",
+      "path": "index.js",
+      "import": "Template, { clone }",
+      "limit": "1 kB"
+    },
+    {
+      "name": "StrutTemplate + clone + map",
+      "path": "index.js",
+      "import": "Template, { clone, map }",
       "limit": "1 kB"
     }
   ]

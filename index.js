@@ -1,4 +1,4 @@
-export default class StrutTemplate {
+class StrutTemplate {
   /** @type {Record<string, any>} */
   _data = {};
 
@@ -39,8 +39,8 @@ export default class StrutTemplate {
   }
 
   /**
-   * @param {Record<string, any>} obj
-   * @param {string} path
+   * @param  {Record<string, any>} obj
+   * @param  {string} path
    * @return { { obj: Record<string, any>, key: string } }
    */
   _delve(obj, path) {
@@ -60,8 +60,8 @@ export default class StrutTemplate {
   }
 
   /**
-   * @param {Record<string, any>} _obj
-   * @param {string} path
+   * @param  {Record<string, any>} _obj
+   * @param  {string} path
    * @return {any}
    */
   _get(_obj, path) {
@@ -70,9 +70,9 @@ export default class StrutTemplate {
   }
 
   /**
-   * @param {Record<string, any>} _obj
-   * @param {string} path
-   * @param {any} value
+   * @param  {Record<string, any>} _obj
+   * @param  {string} path
+   * @param  {any} value
    * @return void
    */
   _set(_obj, path, value) {
@@ -83,8 +83,8 @@ export default class StrutTemplate {
   _RGX = /\{([^\\\}]+)\}/g;
 
   /**
-   * @param {HTMLElement} el
-   * @param {number[]} xpath (for recursion and _map)
+   * @param  {HTMLElement} el
+   * @param  {number[]} xpath (for recursion and _map)
    * @return void
    */
   _parse(el, xpath = []) {
@@ -110,7 +110,6 @@ export default class StrutTemplate {
             if (typeof this._map[key] == "undefined") {
               this._map[key] = [];
             }
-
             this._map[key].push(index);
           }
         }
@@ -119,8 +118,8 @@ export default class StrutTemplate {
   }
 
   /**
-   * @param {Record<string, any>} newData
-   * @param {string} path
+   * @param  {Record<string, any>} newData
+   * @param  {string} path
    * @return {void | Set<number>}
    */
   update(newData, path = "") {
@@ -159,83 +158,85 @@ export default class StrutTemplate {
       node.textContent = newContent;
     }
   }
-}
 
-/**
- * @param {HTMLElement} _el
- * @param {number[]} path
- * @return {Text}
- */
-function _xpath(_el, path) {
-  let el = _el.childNodes.item(path[0]);
-  for (let i = 1; i < path.length; i++) {
-    el = el.childNodes.item(path[i]);
-  }
-  return /** @type Text */ (el);
-}
-
-/**
- * @param {StrutTemplate} template
- * @param {Record<string, any>} data
- * @param {HTMLElement | string | null} _parent
- * @return {StrutTemplate}
- */
-export function clone(template, data = {}, _parent = null) {
-  let t = new StrutTemplate(
-    /** @type {HTMLElement} */ (template.el.cloneNode(true)),
-    false
-  );
-  t.el.removeAttribute("id");
-  t._map = Object.assign({}, template._map);
-  t._nodes = template._nodes.map(({ parts, xpath }, index) => {
-    return {
-      node: _xpath(t.el, xpath),
-      parts: parts.slice(),
-      xpath: xpath.slice(),
-    };
-  });
-
-  t.update(Object.assign({}, template._data, data));
-
-  if (_parent) {
-    const parent = template._el(_parent);
-
-    if (parent !== null) {
-      parent.appendChild(t.el);
+  /**
+   * @param  {number[]} path
+   * @return {Text}
+   */
+  _xpath(path) {
+    let el = this.el.childNodes.item(path[0]);
+    for (let i = 1; i < path.length; i++) {
+      el = el.childNodes.item(path[i]);
     }
+    return /** @type Text */ (el);
   }
 
-  return t;
-}
+  /**
+   * @param  {Record<string, any>} data
+   * @param  {HTMLElement | string | null} _parent
+   * @return {StrutTemplate}
+   */
+  clone(data = {}, _parent = null) {
+    let t = new StrutTemplate(
+      /** @type {HTMLElement} */ (this.el.cloneNode(true)),
+      false
+    );
 
-/**
- * @param {StrutTemplate} template
- * @param {Record<string, any>[]} data
- * @param {HTMLElement | string | null} _parent
- * @return {StrutTemplate[]}
- */
-export function map(template, data, _parent = null) {
-  /** @type {StrutTemplate[]} */
-  let templates = [];
+    t.el.removeAttribute("id");
+    t._map = Object.assign({}, this._map);
+    t._nodes = this._nodes.map(({ parts, xpath }, index) => {
+      return {
+        node: t._xpath(xpath),
+        parts: parts.slice(),
+        xpath: xpath.slice(),
+      };
+    });
 
-  data.forEach((datum) => {
-    const t = clone(template, datum);
-    templates.push(t);
-  });
+    t.update(Object.assign({}, this._data, data));
 
-  if (_parent) {
-    const parent = template._el(_parent);
+    if (_parent) {
+      const parent = this._el(_parent);
 
-    if (parent === null) {
-      return templates;
+      if (parent !== null) {
+        parent.appendChild(t.el);
+      }
     }
 
-    while (parent.lastChild !== null) {
-      parent.removeChild(parent.lastChild);
-    }
-
-    templates.forEach((t) => parent.appendChild(t.el));
+    return t;
   }
 
-  return templates;
+  /**
+   * @param  {Record<string, any>[]} data
+   * @param  {HTMLElement | string | null} _parent
+   * @return {StrutTemplate[]}
+   */
+  map(data, _parent = null) {
+    /** @type {StrutTemplate[]} */
+    let templates = [];
+
+    data.forEach((datum) => {
+      const t = this.clone(datum);
+      templates.push(t);
+    });
+
+    if (_parent) {
+      const parent = this._el(_parent);
+
+      if (parent === null) {
+        return templates;
+      }
+
+      while (parent.lastChild !== null) {
+        parent.removeChild(parent.lastChild);
+      }
+
+      templates.forEach((t) => parent.appendChild(t.el));
+    }
+
+    return templates;
+  }
+}
+
+if (typeof exports != "undefined") {
+  exports.StrutTemplate = StrutTemplate;
 }

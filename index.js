@@ -181,6 +181,7 @@ class StrutTemplate {
       /** @type {HTMLElement} */ (this.el.cloneNode(true)),
       false
     );
+
     t.el.removeAttribute("id");
     t._map = Object.assign({}, this._map);
     t._nodes = this._nodes.map(({ parts, xpath }, index) => {

@@ -14,7 +14,7 @@
   "size-limit": [
     {
       "path": "index.js",
-      "import": "Template",
+      "import": "StrutTemplate",
       "limit": "1 kB"
     }
   ]

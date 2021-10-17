@@ -1,4 +1,4 @@
-export default class StrutTemplate {
+class StrutTemplate {
   /** @type {Record<string, any>} */
   data = {};
 
@@ -234,4 +234,8 @@ export default class StrutTemplate {
 
     return templates;
   }
+}
+
+if (typeof exports != "undefined") {
+  exports.StrutTemplate = StrutTemplate;
 }

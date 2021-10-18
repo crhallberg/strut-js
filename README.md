@@ -10,13 +10,13 @@ Make a new template by passing an HTML element or [selector string](https://deve
 const template = new StrutTemplate("#profile");
 ```
 
-You now have access to three methods that change and modify the DOM based on an object that you pass in.
+You now have access to three methods that change and modify the DOM to match plain JS object data.
 
 ### Update
 
 `.update(data)` will replace all of the relevant `{variable}` tags based on an object you pass to the method. You can use tags like `{profile.name.first}` to access deeper values.
 
-### HTML
+#### HTML
 
 ```html
 <div id="profile">
@@ -25,7 +25,7 @@ You now have access to three methods that change and modify the DOM based on an 
 </div>
 ```
 
-### JS
+#### JS
 
 ```js
 const template = new StrutTemplate("#profile");
@@ -49,7 +49,7 @@ template.update({
 </div>
 ```
 
-### JS
+#### JS
 
 ```js
 template.update({ msgCount: 4 });
@@ -89,7 +89,7 @@ const copy = template.clone(
 
 Passing in a parent will replace all of the children of that parent with all of these clones. Helpful but use with care!
 
-### HTML
+#### HTML
 
 ```html
 <ul id="list">
@@ -97,7 +97,7 @@ Passing in a parent will replace all of the children of that parent with all of 
 </ul>
 ```
 
-### JS
+#### JS
 
 ```js
 const itemTemplate = new StrutTemplate("#item-template");

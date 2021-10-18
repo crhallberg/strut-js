@@ -1,5 +1,5 @@
 class StrutTemplate {
-  /** @type {Record<string, any>} */
+  /** @type {Record<string, string | number | boolean>} */
   _data = {};
 
   /** @type {Record<string, number[]>} */
@@ -31,67 +31,29 @@ class StrutTemplate {
   }
 
   /**
-   * @param {string | HTMLElement} el
+   * @param {string | HTMLElement | null} el
    * @return {HTMLElement | null}
    */
   _el(el) {
+    if (el === null) return null;
     return el instanceof HTMLElement ? el : document.querySelector(el);
-  }
-
-  /**
-   * @param  {Record<string, any>} obj
-   * @param  {string} path
-   * @return { { obj: Record<string, any>, key: string } }
-   */
-  _delve(obj, path) {
-    const parts = path.split(".");
-    const key = /** @type {string} */ (parts.pop());
-
-    for (const p of parts) {
-      if (typeof obj[p] == "undefined") {
-        obj[p] = {};
-      }
-      obj = obj[p];
-    }
-
-    return { obj, key };
-  }
-
-  /**
-   * @param  {Record<string, any>} _obj
-   * @param  {string} path
-   * @return {any}
-   */
-  _get(_obj, path) {
-    const { obj, key } = this._delve(_obj, path);
-    return obj[key];
-  }
-
-  /**
-   * @param  {Record<string, any>} _obj
-   * @param  {string} path
-   * @param  {any} value
-   * @return void
-   */
-  _set(_obj, path, value) {
-    const { obj, key } = this._delve(_obj, path);
-    obj[key] = value;
   }
 
   _RGX = /\{([^\\\}]+)\}/g;
 
   /**
    * @param  {HTMLElement} el
-   * @param  {number[]} xpath (for recursion and _map)
-   * @return void
+   * @param  {Record<string, Set<number>>} setMap (for recursion and _map)
+   * @param  {number[]} _xpath (for recursion and _map)
+   * @return void | Record<string, Set<number>>
    */
-  _parse(el, xpath = []) {
+  _parse(el, setMap = {}, _xpath = []) {
     for (let i = 0; i < el.childNodes.length; i++) {
       const node = el.childNodes[i];
-      xpath.push(i);
+      const xpath = [..._xpath, i];
 
       if (node instanceof HTMLElement) {
-        this._parse(node, xpath);
+        setMap = this._parse(node, setMap, xpath) ?? {};
       }
 
       if (node instanceof Text) {
@@ -105,19 +67,27 @@ class StrutTemplate {
 
           // Every odd-indexed part is a {tag}
           for (let j = 1; j < parts.length; j += 2) {
-            const key = parts[j]; // TODO: trim?
-            this._set(this._data, key, `{${key}}`);
+            const key = parts[j] = parts[j].trim();
+            this._data[key] = `{${key}}`;
 
-            if (typeof this._map[key] == "undefined") {
-              this._map[key] = [];
+            if (typeof setMap[key] == "undefined") {
+              setMap[key] = new Set();
             }
 
-            this._map[key].push(this._nodes.length);
+            setMap[key].add(this._nodes.length);
           }
 
           this._nodes.push({ parts, node, xpath });
         }
       }
+    }
+
+    if (_xpath.length > 0) {
+      return setMap;
+    }
+
+    for (let key in setMap) {
+      this._map[key] = /** @type {number[]} */ Array.from(setMap[key]);
     }
   }
 
@@ -141,7 +111,7 @@ class StrutTemplate {
       const mapped = this._map[path + key];
       if (typeof mapped != "undefined") {
         mapped.forEach((index) => updatedNodes.add(index));
-        this._set(this._data, path + key, newData[key]);
+        this._data[path + key] = newData[key];
       }
     }
 
@@ -156,7 +126,7 @@ class StrutTemplate {
       let newContent = parts[0];
       for (let i = 1; i < parts.length; i++) {
         if (i % 2 === 1) {
-          newContent += this._get(this._data, parts[i]);
+          newContent += this._data[parts[i]];
         } else {
           newContent += parts[i];
         }
@@ -170,11 +140,12 @@ class StrutTemplate {
    * @return {Text}
    */
   _xpath(path) {
+    /** @type {ChildNode} */
     let el = this.el;
     for (let i = 0; i < path.length; i++) {
-      el = el.childNodes.item(path[i]);
+      el = el.childNodes[path[i]];
     }
-    return /** @type Text */ (el);
+    return /** @type {Text} */ (el);
   }
 
   /**

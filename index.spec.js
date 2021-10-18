@@ -17,6 +17,14 @@ describe("template", () => {
     checkHTML(t, "<p>YAY!</p>");
   });
 
+  it("triple update", () => {
+    const t = Strut("<p>{msg}</p>");
+    t.update({ msg: "warm..." });
+    t.update({ msg: "warmer..." });
+    t.update({ msg: "HOT!" });
+    checkHTML(t, "<p>HOT!</p>");
+  });
+
   it("multi", () => {
     const t = Strut('<p>"{name} says {msg}" - {name}</p>');
     t.update({ msg: "YAY!", name: "Chris" });

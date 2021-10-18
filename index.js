@@ -69,11 +69,12 @@ class StrutTemplate {
 
           // Every odd-indexed part is a {tag}
           for (let j = 1; j < parts.length; j += 2) {
-            const [key, val] = parts[j].trim().split("=");
-            parts[j] = key;
-            this._data[key] = val ?? `{${key}}`;
+            const [key, val] = parts[j].split("=");
 
-            if (typeof setMap[key] == "undefined") {
+            parts[j] = key.trim();
+            this._data[parts[j]] = (val ?? `{${key}}`).trim();
+
+            if (!setMap[key]) {
               setMap[key] = new Set();
             }
 

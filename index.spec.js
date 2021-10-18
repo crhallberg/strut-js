@@ -91,7 +91,7 @@ describe("template", () => {
   });
 
   it("handles brace spacing", () => {
-    const t = Strut("<p>{good} { good } {   good } {   good     }</p>");
+    const t = Strut("<p>{good} { good } {   good } {   x =  yep     }</p>");
     t.update({ good: "yep" });
     checkHTML(t, "<p>yep yep yep yep</p>");
   });

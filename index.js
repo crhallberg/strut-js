@@ -6,12 +6,12 @@ class StrutTemplate {
   _map = {};
 
   /**
-   * @typedef {Object} ParsedNode
+   * @typedef {Object} StrutNode
    * @prop {string[]} parts
    * @prop {Text} node
    * @prop {number[]} xpath
    */
-  /** @type {ParsedNode[]} */
+  /** @type {StrutNode[]} */
   _nodes = [];
 
   /**
@@ -27,6 +27,7 @@ class StrutTemplate {
 
     if (_parse) {
       this._parse(this.el);
+      this.update(this._data);
     }
   }
 
@@ -41,8 +42,6 @@ class StrutTemplate {
 
     return el instanceof HTMLElement ? el : document.querySelector(el);
   }
-
-  _RGX = /\{([^\}]+)\}/g;
 
   /**
    * @param  {HTMLElement} el
@@ -62,7 +61,7 @@ class StrutTemplate {
       if (node instanceof Text) {
         const text = node.textContent;
         if (text && text.trim().length > 0) {
-          const parts = text.split(this._RGX);
+          const parts = text.split(/\{([^\}]+)\}/g);
 
           if (parts.length < 2) {
             continue;
@@ -70,8 +69,9 @@ class StrutTemplate {
 
           // Every odd-indexed part is a {tag}
           for (let j = 1; j < parts.length; j += 2) {
-            const key = (parts[j] = parts[j].trim());
-            this._data[key] = `{${key}}`;
+            const [key, val] = parts[j].trim().split("=");
+            parts[j] = key;
+            this._data[key] = val ?? `{${key}}`;
 
             if (typeof setMap[key] == "undefined") {
               setMap[key] = new Set();
@@ -90,7 +90,7 @@ class StrutTemplate {
     }
 
     for (let key in setMap) {
-      this._map[key] = /** @type {number[]} */ Array.from(setMap[key]);
+      this._map[key] = /** @type {number[]} */ [...setMap[key]];
     }
   }
 
@@ -145,7 +145,9 @@ class StrutTemplate {
     /** @type {ChildNode} */
     let el = this.el;
     for (let i = 0; i < path.length; i++) {
-      el.removeAttribute("id");
+      /** @type {HTMLElement} */
+      (el).removeAttribute("id");
+
       el = el.childNodes[path[i]];
     }
     return /** @type {Text} */ (el);

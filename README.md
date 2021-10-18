@@ -60,7 +60,7 @@ template.update({ msgCount: 4 });
 ```html
 <div id="profile">
   <p><b>Welcome, Chris!</b></p>
-  <p>You have {msgCount} messages.</p>
+  <p>You have 4 messages.</p>
 </div>
 ```
 

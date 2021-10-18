@@ -115,7 +115,7 @@ describe("clone", () => {
     checkHTML(t2, "<p>2</p>");
   });
 
-  it("removes testbedElement ids", () => {
+  it("removes ids", () => {
     const t1 = Strut('<p id="a"><b id="b">{num}</b></p>');
     t1.update({ num: 1 });
     const t2 = t1.clone({ num: 2 });

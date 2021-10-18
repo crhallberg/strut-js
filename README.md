@@ -14,14 +14,18 @@ You now have access to three methods that change and modify the DOM to match pla
 
 ### Update
 
-`.update(data)` will replace all of the relevant `{variable}` tags based on an object you pass to the method. You can use tags like `{profile.name.first}` to access deeper values.
+`.update(data)` will replace all of the relevant `{variable}` tags based on an object you pass to the method.
+
+You can use tags like `{profile.name.first}` to access deeper values in your data.
+
+You can also have default values like `{msgCount=0}`.
 
 #### HTML
 
 ```html
 <div id="profile">
   <p><b>Welcome, {person.name.first}!</b></p>
-  <p>You have {msgCount} messages.</p>
+  <p>You have {msgCount=0} messages.</p>
 </div>
 ```
 
@@ -45,7 +49,7 @@ template.update({
 ```html
 <div id="profile">
   <p><b>Welcome, Chris!</b></p>
-  <p>You have {msgCount} messages.</p>
+  <p>You have 0 messages.</p>
 </div>
 ```
 
@@ -93,7 +97,8 @@ Passing in a parent will replace all of the children of that parent with all of 
 
 ```html
 <ul id="list">
-  <li id="item-template">{box} {todo}</li>
+  <!-- Check out the default value here! -->
+  <li id="item-template">{box=[ ]} {todo}</li>
 </ul>
 ```
 
@@ -101,7 +106,6 @@ Passing in a parent will replace all of the children of that parent with all of 
 
 ```js
 const itemTemplate = new StrutTemplate("#item-template");
-itemTemplate.update({ box: "[ ]" });
 const todos = itemTemplate.map(
   [
     { todo: "Get apples." },

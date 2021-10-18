@@ -21,6 +21,13 @@ describe("template", () => {
     checkHTML(t, "<p>YAY!</p>");
   });
 
+  it("default value", () => {
+    const t = Strut("<p>{msg=default}</p>");
+    checkHTML(t, "<p>default</p>");
+    t.update({ msg: "YAY!" });
+    checkHTML(t, "<p>YAY!</p>");
+  });
+
   it("html escaped", () => {
     const t = Strut("<p>{msg}</p>");
     t.update({ msg: "<b>bold</b>" });
@@ -127,11 +134,7 @@ describe("clone", () => {
 describe("map", () => {
   it("clones with update", () => {
     const origin = Strut("<p>{num}</p>");
-    const ts = origin.map([
-      { num: 0 },
-      { num: 1 },
-      { num: 2 },
-    ]);
+    const ts = origin.map([{ num: 0 }, { num: 1 }, { num: 2 }]);
     assert.equal(ts.length, 3);
     checkHTML(ts[0], "<p>0</p>");
     checkHTML(ts[1], "<p>1</p>");
@@ -140,11 +143,7 @@ describe("map", () => {
 
   it("no quantum entanglement", () => {
     const origin = Strut("<p>{num}</p>");
-    const ts = origin.map([
-      { num: 0 },
-      { num: 1 },
-      { num: 2 },
-    ]);
+    const ts = origin.map([{ num: 0 }, { num: 1 }, { num: 2 }]);
     origin.update({ num: "BOOM" });
     checkHTML(ts[0], "<p>0</p>");
     checkHTML(ts[1], "<p>1</p>");
@@ -153,21 +152,19 @@ describe("map", () => {
 
   it("list example", () => {
     const item = Strut(
-      '<ul id="list"><li id="item-template">{box} {todo}</li></ul>',
+      '<ul id="list"><li id="item-template">{box=[ ]} {todo}</li></ul>',
       "item-template"
     );
-    console.log(item.el);
-    item.update({ box: "[ ]" });
 
     const todos = item.map(
-        [
-          { todo: "Get apples." },
-          { todo: "Peel apples." },
-          { todo: "Add to slow cooker." },
-          { todo: "Add sugar and spice." },
-          { todo: "Slow cook for 6 hours." },
-        ],
-        item.el.parentNode
+      [
+        { todo: "Get apples." },
+        { todo: "Peel apples." },
+        { todo: "Add to slow cooker." },
+        { todo: "Add sugar and spice." },
+        { todo: "Slow cook for 6 hours." },
+      ],
+      item.el.parentNode
     );
 
     todos[0].update({ box: "[X]" });

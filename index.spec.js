@@ -17,6 +17,12 @@ describe("template", () => {
     checkHTML(t, "<p>YAY!</p>");
   });
 
+  it("html escaped", () => {
+    const t = Strut("<p>{msg}</p>");
+    t.update({ msg: "<b>bold</b>" });
+    checkHTML(t, "<p>&lt;b&gt;bold&lt;/b&gt;</p>");
+  });
+
   it("triple update", () => {
     const t = Strut("<p>{msg}</p>");
     t.update({ msg: "warm..." });

@@ -133,6 +133,11 @@ todos[1].update({ box: "[X]" });
 
 [TypeScript](https://www.typescriptlang.org/) compatible types added via [JSDoc](https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html) for compatibility with TS and browser compatibility out of the box.
 
+## Limitations / Known Issues
+
+- `{variable}` tags inside of tags ignored: `<p id={id}>Does nothing</p>`.
+- All HTML is escaped: `<p>&lt;b&gt;bold&lt;/b&gt;</p>`.
+
 ## Example
 
 ```html

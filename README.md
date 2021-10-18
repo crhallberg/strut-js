@@ -207,7 +207,7 @@ A few useful package.json scripts for contributing developers:
 
 | Script | Description |
 | ------ | ----------- |
-| `npm run check-types` | runs TypeScript checks on JSDocs. |
-| `npm run dev` | runs type-checking in watch mode. |
-| `npm run check-size` | uses [size-limit](https://github.com/ai/size-limit) to check the gzipped size of the export. |
+| `npm run check-types` | Runs TypeScript checks on JSDocs. |
+| `npm run dev` | Runs type-checking in watch mode. |
+| `npm run check-size` | Uses [size-limit](https://github.com/ai/size-limit) to check the gzipped size of the export. |
 | `npm run format` | Runs [Prettier](https://prettier.io/) on all core JS and JSON files. |

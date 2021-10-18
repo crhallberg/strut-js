@@ -68,9 +68,9 @@ template.update({ msgCount: 4 });
 
 When you want to use a template to make multiple elements, you can use `.clone(data, parent)`.
 
-Passing in `data` will pass in data to immediately update the new copy. Use `null` or `{}` to skip this.
+Passing in `data` will immediately update the new copy. Use `null` or `{}` to skip this.
 
-Passing in a parent will insert the new element immediately, or you can use `template.el` to insert the new copy onto the page yourself.
+Passing in a parent element or selector will insert the new element immediately, or you can use `template.el` yourself.
 
 ```js
 const copy = template.clone();

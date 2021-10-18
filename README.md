@@ -1,6 +1,6 @@
 # Strut JS
 
-Strut JS is one lightweight class that parsed HTML looking for `{variable}` tags that it can update in the future.
+Strut JS is one lightweight class that parses HTML, looking for plain `{variable}` tags that it can update in the future.
 
 ## How to Use
 
@@ -16,12 +16,16 @@ You now have access to three methods that change and modify the DOM based on an 
 
 `.update(data)` will replace all of the relevant `{variable}` tags based on an object you pass to the method. You can use tags like `{profile.name.first}` to access deeper values.
 
+### HTML
+
 ```html
 <div id="profile">
-  <p>Welcome, {person.name.first}!</p>
+  <p><b>Welcome, {person.name.first}!</b></p>
   <p>You have {msgCount} messages.</p>
 </div>
 ```
+
+### JS
 
 ```js
 const template = new StrutTemplate("#profile");
@@ -34,12 +38,30 @@ template.update({
     }
   }
 });
+```
 
-// {msgCount} remains unchanged
+### Result
 
+```html
+<div id="profile">
+  <p><b>Welcome, Chris!</b></p>
+  <p>You have {msgCount} messages.</p>
+</div>
+```
+
+### JS
+
+```js
 template.update({ msgCount: 4 });
+```
 
-// The first name is unchanged and the DOM now says "You have 4 messages."
+### Result
+
+```html
+<div id="profile">
+  <p><b>Welcome, Chris!</b></p>
+  <p>You have {msgCount} messages.</p>
+</div>
 ```
 
 ## Clone
@@ -67,11 +89,15 @@ const copy = template.clone(
 
 Passing in a parent will replace all of the children of that parent with all of these clones. Helpful but use with care!
 
+### HTML
+
 ```html
 <ul id="list">
   <li id="item-template">{box} {todo}</li>
 </ul>
 ```
+
+### JS
 
 ```js
 const itemTemplate = new StrutTemplate("#item-template");
@@ -90,6 +116,8 @@ const todos = itemTemplate.map(
 todos[0].update({ box: "[X]" });
 todos[1].update({ box: "[X]" });
 ```
+
+### Result
 
 ```html
 <ul id="list">
@@ -164,3 +192,14 @@ todos[1].update({ box: "[X]" });
 ## Inspiration
 
 Inspired by [this tweet by Freya Holmér](https://twitter.com/FreyaHolmer/status/1449052877318668288). I hope this is the Level 2 solution that the next person is hoping for.
+
+## Contributing
+
+After making changes, you can run the integration tests by opening `mocha.html` in the browser of your choice.
+
+A few useful package.json scripts for contributing developers:
+
+- `npm run check-types`: runs TypeScript checks on JSDocs.
+- `npm run dev`: runs type-checking in watch mode.
+- `npm run check-size`: uses [size-limit](https://github.com/ai/size-limit) to check the gzipped size of the export.
+- `npm run format`: Runs [Prettier](https://prettier.io/) on all core JS and JSON files.

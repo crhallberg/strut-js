@@ -22,7 +22,7 @@ class StrutTemplate {
     this.el = this._el(el);
 
     if (this.el === null) {
-      throw Error("StrutTemplate el not found: " + el);
+      throw Error("StrutTemplate element not found: " + el);
     }
 
     if (_parse) {
@@ -44,18 +44,16 @@ class StrutTemplate {
    * @return { { obj: Record<string, any>, key: string } }
    */
   _delve(obj, path) {
-    if (path.indexOf(".") === -1) {
-      return { obj, key: path };
-    }
-
     const parts = path.split(".");
     const key = /** @type {string} */ (parts.pop());
+
     for (const p of parts) {
       if (typeof obj[p] == "undefined") {
         obj[p] = {};
       }
       obj = obj[p];
     }
+
     return { obj, key };
   }
 
@@ -88,30 +86,36 @@ class StrutTemplate {
    * @return void
    */
   _parse(el, xpath = []) {
-    let isParent = false;
     for (let i = 0; i < el.childNodes.length; i++) {
-      const child = el.childNodes[i];
-      if (child instanceof HTMLElement) {
-        this._parse(child, [...xpath, i]);
+      const node = el.childNodes[i];
+      xpath.push(i);
+
+      if (node instanceof HTMLElement) {
+        this._parse(node, xpath);
       }
-      if (child instanceof Text) {
-        const text = child.textContent;
+
+      if (node instanceof Text) {
+        const text = node.textContent;
         if (text !== null && text.trim().length > 0) {
           const parts = text.split(this._RGX);
+
           if (parts.length < 2) {
             continue;
           }
-          const index = this._nodes.length;
-          this._nodes.push({ parts, node: child, xpath: [...xpath, i] });
-          for (let i = 1; i < parts.length; i += 2) {
-            const key = parts[i];
+
+          // Every odd-indexed part is a {tag}
+          for (let j = 1; j < parts.length; j += 2) {
+            const key = parts[j]; // TODO: trim?
             this._set(this._data, key, `{${key}}`);
 
             if (typeof this._map[key] == "undefined") {
               this._map[key] = [];
             }
-            this._map[key].push(index);
+
+            this._map[key].push(this._nodes.length);
           }
+
+          this._nodes.push({ parts, node, xpath });
         }
       }
     }
@@ -127,16 +131,18 @@ class StrutTemplate {
 
     for (const key in newData) {
       if (typeof newData[key] == "object") {
-        const subUpdates = /** @type {Set<number>} */ (
+        const childNodes = /** @type {Set<number>} */ (
           this.update(newData[key], path + key + ".")
         );
-        subUpdates.forEach((index) => updatedNodes.add(index));
+        childNodes.forEach((index) => updatedNodes.add(index));
         continue;
       }
 
-      this._map[path + key].forEach((index) => updatedNodes.add(index));
-
-      this._set(this._data, path + key, newData[key]);
+      const mapped = this._map[path + key];
+      if (typeof mapped != "undefined") {
+        mapped.forEach((index) => updatedNodes.add(index));
+        this._set(this._data, path + key, newData[key]);
+      }
     }
 
     // Recursive return
@@ -164,8 +170,8 @@ class StrutTemplate {
    * @return {Text}
    */
   _xpath(path) {
-    let el = this.el.childNodes.item(path[0]);
-    for (let i = 1; i < path.length; i++) {
+    let el = this.el;
+    for (let i = 0; i < path.length; i++) {
       el = el.childNodes.item(path[i]);
     }
     return /** @type Text */ (el);
@@ -214,29 +220,15 @@ class StrutTemplate {
     /** @type {StrutTemplate[]} */
     let templates = [];
 
-    data.forEach((datum) => {
-      const t = this.clone(datum);
-      templates.push(t);
-    });
-
-    if (_parent) {
-      const parent = this._el(_parent);
-
-      if (parent === null) {
-        return templates;
-      }
-
-      while (parent.lastChild !== null) {
-        parent.removeChild(parent.lastChild);
-      }
-
-      templates.forEach((t) => parent.appendChild(t.el));
+    const parent = this._el(_parent);
+    while (parent && parent.lastChild !== null) {
+      parent.removeChild(parent.lastChild);
     }
 
-    return templates;
+    return data.map((datum) => this.clone(datum, parent));
   }
 }
 
-if (typeof exports != "undefined") {
-  exports.StrutTemplate = StrutTemplate;
+if (typeof module !== "undefined") {
+  module.exports = StrutTemplate;
 }

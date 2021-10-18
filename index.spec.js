@@ -22,10 +22,10 @@ describe("template", () => {
   });
 
   it("default value", () => {
-    const t = Strut("<p>{msg=default}</p>");
-    checkHTML(t, "<p>default</p>");
+    const t = Strut("<p>{msg=default} and {number=3}</p>");
+    checkHTML(t, "<p>default and 3</p>");
     t.update({ msg: "YAY!" });
-    checkHTML(t, "<p>YAY!</p>");
+    checkHTML(t, "<p>YAY! and 3</p>");
   });
 
   it("html escaped", () => {

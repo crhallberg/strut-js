@@ -14,6 +14,14 @@
   },
   "size-limit": [
     {
+      "name": "gzipped",
+      "path": "index.js",
+      "import": "StrutTemplate",
+      "limit": "1 kB"
+    },
+    {
+      "name": "brotli",
+      "brotli": true,
       "path": "index.js",
       "import": "StrutTemplate",
       "limit": "1 kB"

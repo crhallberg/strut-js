@@ -40,7 +40,7 @@ template.update({
 });
 ```
 
-### Result
+#### Result
 
 ```html
 <div id="profile">
@@ -55,7 +55,7 @@ template.update({
 template.update({ msgCount: 4 });
 ```
 
-### Result
+#### Result
 
 ```html
 <div id="profile">
@@ -117,7 +117,7 @@ todos[0].update({ box: "[X]" });
 todos[1].update({ box: "[X]" });
 ```
 
-### Result
+#### Result
 
 ```html
 <ul id="list">

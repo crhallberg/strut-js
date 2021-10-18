@@ -137,6 +137,7 @@ todos[1].update({ box: "[X]" });
 
 - `{variable}` tags inside of tags ignored: `<p id={id}>Does nothing</p>`.
 - All HTML is escaped: `<p>&lt;b&gt;bold&lt;/b&gt;</p>`.
+- [Strut](http://strut.io/) is another JS project for making slides with markdown.
 
 ## Example
 
@@ -204,7 +205,9 @@ After making changes, you can run the integration tests by opening `mocha.html` 
 
 A few useful package.json scripts for contributing developers:
 
-- `npm run check-types`: runs TypeScript checks on JSDocs.
-- `npm run dev`: runs type-checking in watch mode.
-- `npm run check-size`: uses [size-limit](https://github.com/ai/size-limit) to check the gzipped size of the export.
-- `npm run format`: Runs [Prettier](https://prettier.io/) on all core JS and JSON files.
+| Script | Description |
+| ------ | ----------- |
+| `npm run check-types` | runs TypeScript checks on JSDocs. |
+| `npm run dev` | runs type-checking in watch mode. |
+| `npm run check-size` | uses [size-limit](https://github.com/ai/size-limit) to check the gzipped size of the export. |
+| `npm run format` | Runs [Prettier](https://prettier.io/) on all core JS and JSON files. |

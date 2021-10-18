@@ -120,7 +120,7 @@ class StrutTemplate {
       return updatedNodes;
     }
 
-    // Update nodes at the top
+    // Update nodes
     for (const index of updatedNodes) {
       const { node, parts } = this._nodes[index];
       let newContent = parts[0];

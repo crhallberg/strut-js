@@ -82,6 +82,33 @@ describe("template", () => {
   });
 });
 
-describe("clone", () => {});
+describe("clone", () => {
+  it("clones", () => {
+    const t1 = Strut("<p>{num}</p>");
+    t1.update({ num: 1 });
+    const t2 = t1.clone();
+    assert.equal(
+      t1.el.innerHTML,
+      t2.el.innerHTML,
+    );
+  });
+
+  it("clones with update", () => {
+    const t1 = Strut("<p>{num}</p>");
+    t1.update({ num: 1 });
+    const t2 = t1.clone({ num: 2 });
+    checkHTML(t1, "<p>1</p>");
+    checkHTML(t2, "<p>2</p>");
+  });
+
+  it("no quantum entanglement", () => {
+    const t1 = Strut("<p>{num}</p>");
+    t1.update({ num: 1 });
+    const t2 = t1.clone({ num: 2 });
+    t1.update({ num: "one" });
+    checkHTML(t1, "<p>one</p>");
+    checkHTML(t2, "<p>2</p>");
+  });
+});
 
 describe("map", () => {});

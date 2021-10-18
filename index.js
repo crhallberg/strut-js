@@ -182,7 +182,7 @@ class StrutTemplate {
   }
 
   /**
-   * @param  {Record<string, any>[]} data
+   * @param  {Array<Record<string, any>>} data
    * @param  {HTMLElement | string | null} _parent
    * @return {StrutTemplate[]}
    */

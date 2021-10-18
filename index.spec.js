@@ -114,4 +114,30 @@ describe("clone", () => {
   });
 });
 
-describe("map", () => {});
+describe("map", () => {
+  it("clones with update", () => {
+    const origin = Strut("<p>{num}</p>");
+    const ts = origin.map([
+      { num: 0 },
+      { num: 1 },
+      { num: 2 },
+    ]);
+    assert.equal(ts.length, 3);
+    checkHTML(ts[0], "<p>0</p>");
+    checkHTML(ts[1], "<p>1</p>");
+    checkHTML(ts[2], "<p>2</p>");
+  });
+
+  it("no quantum entanglement", () => {
+    const origin = Strut("<p>{num}</p>");
+    const ts = origin.map([
+      { num: 0 },
+      { num: 1 },
+      { num: 2 },
+    ]);
+    origin.update({ num: "BOOM" });
+    checkHTML(ts[0], "<p>0</p>");
+    checkHTML(ts[1], "<p>1</p>");
+    checkHTML(ts[2], "<p>2</p>");
+  });
+});

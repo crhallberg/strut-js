@@ -39,7 +39,7 @@ class StrutTemplate {
     return el instanceof HTMLElement ? el : document.querySelector(el);
   }
 
-  _RGX = /\{([^\\\}]+)\}/g;
+  _RGX = /\{([^\}]+)\}/g;
 
   /**
    * @param  {HTMLElement} el
@@ -67,7 +67,7 @@ class StrutTemplate {
 
           // Every odd-indexed part is a {tag}
           for (let j = 1; j < parts.length; j += 2) {
-            const key = parts[j] = parts[j].trim();
+            const key = (parts[j] = parts[j].trim());
             this._data[key] = `{${key}}`;
 
             if (typeof setMap[key] == "undefined") {
@@ -101,16 +101,15 @@ class StrutTemplate {
 
     for (const key in newData) {
       if (typeof newData[key] == "object") {
-        const childNodes = /** @type {Set<number>} */ (
+        const subNodes = /** @type {Set<number>} */ (
           this.update(newData[key], path + key + ".")
         );
-        childNodes.forEach((index) => updatedNodes.add(index));
+        subNodes.forEach((index) => updatedNodes.add(index));
         continue;
       }
 
-      const mapped = this._map[path + key];
-      if (typeof mapped != "undefined") {
-        mapped.forEach((index) => updatedNodes.add(index));
+      if (typeof this._map[path + key] != "undefined") {
+        this._map[path + key].forEach((index) => updatedNodes.add(index));
         this._data[path + key] = newData[key];
       }
     }
@@ -125,7 +124,7 @@ class StrutTemplate {
       const { node, parts } = this._nodes[index];
       let newContent = parts[0];
       for (let i = 1; i < parts.length; i++) {
-        if (i % 2 === 1) {
+        if (i % 2) {
           newContent += this._data[parts[i]];
         } else {
           newContent += parts[i];
@@ -164,12 +163,12 @@ class StrutTemplate {
     t._nodes = this._nodes.map(({ parts, xpath }, index) => {
       return {
         node: t._xpath(xpath),
-        parts: parts.slice(),
-        xpath: xpath.slice(),
+        parts: [...parts],
+        xpath: [...xpath],
       };
     });
 
-    t.update(Object.assign({}, this._data, data));
+    t.update(data);
 
     if (_parent) {
       const parent = this._el(_parent);

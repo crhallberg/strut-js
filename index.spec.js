@@ -74,9 +74,7 @@ describe("template", () => {
   });
 
   it("handles brace spacing", () => {
-    const t = Strut(
-      '<p>{good} { good } {   good } {   good     }</p>'
-    );
+    const t = Strut("<p>{good} { good } {   good } {   good     }</p>");
     t.update({ good: "yep" });
     checkHTML(t, "<p>yep yep yep yep</p>");
   });
@@ -87,10 +85,7 @@ describe("clone", () => {
     const t1 = Strut("<p>{num}</p>");
     t1.update({ num: 1 });
     const t2 = t1.clone();
-    assert.equal(
-      t1.el.innerHTML,
-      t2.el.innerHTML,
-    );
+    assert.equal(t1.el.innerHTML, t2.el.innerHTML);
   });
 
   it("clones with update", () => {
@@ -115,7 +110,7 @@ describe("clone", () => {
     t1.update({ num: 1 });
     const t2 = t1.clone({ num: 2 });
     checkHTML(t1, '<p id="a"><b id="b">1</b></p>');
-    checkHTML(t2, '<p><b>2</b></p>');
+    checkHTML(t2, "<p><b>2</b></p>");
   });
 });
 

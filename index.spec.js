@@ -109,6 +109,14 @@ describe("clone", () => {
     checkHTML(t1, "<p>one</p>");
     checkHTML(t2, "<p>2</p>");
   });
+
+  it("removes element ids", () => {
+    const t1 = Strut('<p id="a"><b id="b">{num}</b></p>');
+    t1.update({ num: 1 });
+    const t2 = t1.clone({ num: 2 });
+    checkHTML(t1, '<p id="a"><b id="b">1</b></p>');
+    checkHTML(t2, '<p><b>2</b></p>');
+  });
 });
 
 describe("map", () => {});

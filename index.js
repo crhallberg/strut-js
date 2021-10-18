@@ -143,6 +143,7 @@ class StrutTemplate {
     /** @type {ChildNode} */
     let el = this.el;
     for (let i = 0; i < path.length; i++) {
+      el.removeAttribute("id");
       el = el.childNodes[path[i]];
     }
     return /** @type {Text} */ (el);
@@ -159,7 +160,6 @@ class StrutTemplate {
       false
     );
 
-    t.el.removeAttribute("id");
     t._map = Object.assign({}, this._map);
     t._nodes = this._nodes.map(({ parts, xpath }, index) => {
       return {

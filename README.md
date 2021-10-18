@@ -121,7 +121,7 @@ todos[1].update({ box: "[X]" });
 
 ```html
 <ul id="list">
-    <li id="item-template">[X] Get apples.</li>
+    <li>[X] Get apples.</li>
     <li>[X] Peel apples.</li>
     <li>[ ] Add to slow cooker.</li>
     <li>[ ] Add sugar and spice.</li>

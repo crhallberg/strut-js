@@ -1,9 +1,13 @@
 const assert = chai.assert;
-const el = document.getElementById("testbed");
+const testbedEl = document.getElementById("testbed");
 
-function Strut(html) {
-  el.innerHTML = html;
-  return new StrutTemplate("#testbed");
+function Strut(html, id = "testbed") {
+  testbedEl.innerHTML = html;
+  return new StrutTemplate("#" + id);
+}
+
+function get(sel) {
+  return testbedEl.querySelector(sel);
 }
 
 function checkHTML(t, html) {
@@ -111,7 +115,7 @@ describe("clone", () => {
     checkHTML(t2, "<p>2</p>");
   });
 
-  it("removes element ids", () => {
+  it("removes testbedElement ids", () => {
     const t1 = Strut('<p id="a"><b id="b">{num}</b></p>');
     t1.update({ num: 1 });
     const t2 = t1.clone({ num: 2 });
@@ -145,5 +149,33 @@ describe("map", () => {
     checkHTML(ts[0], "<p>0</p>");
     checkHTML(ts[1], "<p>1</p>");
     checkHTML(ts[2], "<p>2</p>");
+  });
+
+  it("list example", () => {
+    const item = Strut(
+      '<ul id="list"><li id="item-template">{box} {todo}</li></ul>',
+      "item-template"
+    );
+    console.log(item.el);
+    item.update({ box: "[ ]" });
+
+    const todos = item.map(
+        [
+          { todo: "Get apples." },
+          { todo: "Peel apples." },
+          { todo: "Add to slow cooker." },
+          { todo: "Add sugar and spice." },
+          { todo: "Slow cook for 6 hours." },
+        ],
+        item.el.parentNode
+    );
+
+    todos[0].update({ box: "[X]" });
+    todos[1].update({ box: "[X]" });
+
+    assert.equal(
+      get("#list").innerHTML,
+      "<li>[X] Get apples.</li><li>[X] Peel apples.</li><li>[ ] Add to slow cooker.</li><li>[ ] Add sugar and spice.</li><li>[ ] Slow cook for 6 hours.</li>"
+    );
   });
 });

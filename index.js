@@ -21,7 +21,7 @@ class StrutTemplate {
   constructor(el, _parse = true) {
     this.el = this._el(el);
 
-    if (this.el === null) {
+    if (!this.el) {
       throw Error("StrutTemplate element not found: " + el);
     }
 
@@ -35,7 +35,10 @@ class StrutTemplate {
    * @return {HTMLElement | null}
    */
   _el(el) {
-    if (el === null) return null;
+    if (!el) {
+      return null;
+    }
+
     return el instanceof HTMLElement ? el : document.querySelector(el);
   }
 
@@ -58,7 +61,7 @@ class StrutTemplate {
 
       if (node instanceof Text) {
         const text = node.textContent;
-        if (text !== null && text.trim().length > 0) {
+        if (text && text.trim().length > 0) {
           const parts = text.split(this._RGX);
 
           if (parts.length < 2) {
@@ -168,12 +171,12 @@ class StrutTemplate {
       };
     });
 
-    t.update(data);
+    t.update(Object.assign({}, this._data, data));
 
     if (_parent) {
       const parent = this._el(_parent);
 
-      if (parent !== null) {
+      if (parent) {
         parent.appendChild(t.el);
       }
     }
@@ -191,7 +194,7 @@ class StrutTemplate {
     let templates = [];
 
     const parent = this._el(_parent);
-    while (parent && parent.lastChild !== null) {
+    while (parent && parent.lastChild) {
       parent.removeChild(parent.lastChild);
     }
 
